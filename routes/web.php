@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GithubController;
 use App\Http\Controllers\RecipeController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,9 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::resource('/recipes', RecipeController::class);
+
+Route::get('auth/github', [GithubController::class, 'redirectToGithub'])->name('github.redirect');
+Route::get('auth/github/callback', [GithubController::class, 'handleGithubCallback']);
 
 Route::middleware([
     'auth:sanctum',
