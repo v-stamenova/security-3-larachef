@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\GithubController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\RecipeController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,10 @@ Route::get('/', function () {
 
 Route::resource('/recipes', RecipeController::class);
 
-Route::get('auth/github', [GithubController::class, 'redirectToGithub'])->name('github.redirect');
-Route::get('auth/github/callback', [GithubController::class, 'handleGithubCallback']);
+Route::get('login/{provider}', [SocialiteController::class, 'redirectToProvider'])->name('provider.redirect');
+Route::get('login/{provider}/callback', [SocialiteController::class, 'handleProviderCallback']);
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware([
     'auth:sanctum',

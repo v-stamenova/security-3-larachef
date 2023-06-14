@@ -12,24 +12,25 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\isNull;
 
-class GithubController extends Controller
+class SocialiteController extends Controller
 {
-    public function redirectToGithub(): RedirectResponse
+    public function redirectToProvider($provider): RedirectResponse
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
-    public function handleGithubCallback()
+    public function handleProviderCallback($provider)
     {
+        $user = Socialite::driver($provider)->user();
 
-        $user = Socialite::driver('github')->user();
-
-        $searchedUser = User::where('github_id', $user->id)->first();
+        $searchedUser = User::where('provider_id', $user->id)
+            ->where('provider', $provider)->first();
         if (!$searchedUser) {
             $searchedUser = User::create([
                 'name' => $user->name,
                 'email' => $user->email,
-                'github_id' => $user->id,
+                'provider' => $provider,
+                'provider_id' => $user->id,
                 'password' => Hash::make(Str::random(10)),
             ]);
         }
